@@ -1,0 +1,183 @@
+<html>
+  <head>
+    <style>
+    table {
+      border: 1px solid black;
+      width: 60vw;
+      height: 60vw;
+    }
+    table > tbody td {
+      width: 11.111111111%;
+    }
+    table > tbody td:nth-child(even) {
+      background: #555;
+    }
+    table > tbody td:nth-child(odd) {
+      background: #CCC;
+    }
+    table > tbody > tr:nth-child(even) > td:nth-child(even) {
+      background: #CCC;
+    }
+    table > tbody > tr:nth-child(even) > td:nth-child(odd) {
+      background: #555;
+    }
+
+    thead, thead tr, thead td { 
+      height: 40px;
+    }
+    thead td {
+      background: #EEE;
+      border-bottom: 1px solid black;
+    }
+    table > tbody > tr > td:first-child {
+      background: #EEE !important;
+      border-right: 1px solid black;
+      text-align: center;
+    }
+
+    table > tbody div {
+      margin: 2px;
+      width: 90%;
+      height: 90%;
+      border: 1px solid white;
+      border-radius: 50%;
+    }
+    table > tbody div.red {
+      background: #F33;
+    }
+    table > tbody div.black {
+      background: black;
+    }
+    table > tbody div.selected {
+      border-color: yellow;
+      border-width: 2px;
+    }
+    </style>
+  </head>
+  <body>
+    <h1>Checkers</h1>
+    <hr>
+    <table>
+      <thead>
+        <td></td>
+        <td>
+          A
+        </td>
+        <td>
+          B
+        </td>
+        <td>
+          C
+        </td>
+        <td>
+          D
+        </td>
+        <td>
+          E
+        </td>
+        <td>
+          F
+        </td>
+        <td>
+          G
+        </td>
+        <td>
+          H
+        </td>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td>{% if a1</td>
+          <td><div class="red"></div></td>
+          <td><div class="red"></div></td>
+          <td><div class="black"></div></td>
+          <td><div class="black"></div></td>
+          <td><div class="black"></div></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>5</td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>6</td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>7</td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>8</td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+    <hr>
+    It is red's turn
+
+    </body>
+</html>
