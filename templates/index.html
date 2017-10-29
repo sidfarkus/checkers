@@ -1,3 +1,4 @@
+<!doctype html>
 <html>
   <head>
     <style>
@@ -57,127 +58,55 @@
   <body>
     <h1>Checkers</h1>
     <hr>
-    <table>
-      <thead>
-        <td></td>
-        <td>
-          A
-        </td>
-        <td>
-          B
-        </td>
-        <td>
-          C
-        </td>
-        <td>
-          D
-        </td>
-        <td>
-          E
-        </td>
-        <td>
-          F
-        </td>
-        <td>
-          G
-        </td>
-        <td>
-          H
-        </td>
-      </thead>
-      <tbody>
-        <tr>
-          <td>1</td>
-          <td>{% if a1</td>
-          <td><div class="red"></div></td>
-          <td><div class="red"></div></td>
-          <td><div class="black"></div></td>
-          <td><div class="black"></div></td>
-          <td><div class="black"></div></td>
-          <td></td>
-          <td></td>
-        </tr>
-        <tr>
-          <td>2</td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-        </tr>
-        <tr>
-          <td>3</td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-        </tr>
-        <tr>
-          <td>4</td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-        </tr>
-        <tr>
-          <td>5</td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-        </tr>
-        <tr>
-          <td>6</td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-        </tr>
-        <tr>
-          <td>7</td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-        </tr>
-        <tr>
-          <td>8</td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-        </tr>
-      </tbody>
-    </table>
+        <table>
+          <thead>
+          <tr>
+            <td></td>
+            <td>
+              A
+            </td>
+            <td>
+              B
+            </td>
+            <td>
+              C
+            </td>
+            <td>
+              D
+            </td>
+            <td>
+              E
+            </td>
+            <td>
+              F
+            </td>
+            <td>
+              G
+            </td>
+            <td>
+              H
+            </td>
+          </tr>
+          </thead>
+          <tbody>
+            {% set count = [0] %}
+            {% for row in board.pieces %}
+                <tr>
+                <td>{{ count[0] + 1 }}</td>
+                {% for piece in board.pieces[count[0]] %}
+                  {% if piece %}
+                    <td><div class="{{ piece.color }}"></div></td>
+                  {% else %}
+                    <td></td>
+                  {% endif %}
+                {% endfor %}
+                </tr>
+                {% if count.append(count.pop() + 1) %}{% endif %}
+            {% endfor %}
+          </tbody>
+        </table>
     <hr>
-    It is red's turn
+    It is {{ turn }}'s turn.
 
     </body>
 </html>
