@@ -2,10 +2,17 @@
 <html>
   <head>
     <style>
+    .right {
+      float: right;
+    }
+    .turn-heading {
+      font-size: 1.5rem;
+      margin-right: 20%;
+    }
     table {
       border: 1px solid black;
-      width: 60vw;
-      height: 60vw;
+      width: 45vw;
+      height: 45vw;
     }
     table > tbody td {
       width: 11.111111111%;
@@ -36,77 +43,64 @@
       text-align: center;
     }
 
-    table > tbody div {
+    table > tbody a {
       margin: 2px;
       width: 90%;
       height: 90%;
       border: 1px solid white;
       border-radius: 50%;
+      display: block;
     }
-    table > tbody div.red {
+    table > tbody a:hover {
+      border-color: blue;
+    }
+    table > tbody .red {
       background: #F33;
     }
-    table > tbody div.black {
+    table > tbody .black {
       background: black;
     }
-    table > tbody div.selected {
+    table > tbody .selected {
       border-color: yellow;
       border-width: 2px;
+    }
+    .highlighted {
+      background: blue;
     }
     </style>
   </head>
   <body>
     <h1>Checkers</h1>
     <hr>
-        <table>
-          <thead>
-          <tr>
-            <td></td>
-            <td>
-              A
-            </td>
-            <td>
-              B
-            </td>
-            <td>
-              C
-            </td>
-            <td>
-              D
-            </td>
-            <td>
-              E
-            </td>
-            <td>
-              F
-            </td>
-            <td>
-              G
-            </td>
-            <td>
-              H
-            </td>
-          </tr>
-          </thead>
-          <tbody>
-            {% set count = [0] %}
-            {% for row in board.pieces %}
-                <tr>
-                <td>{{ count[0] + 1 }}</td>
-                {% for piece in board.pieces[count[0]] %}
-                  {% if piece %}
-                    <td><div class="{{ piece.color }}"></div></td>
-                  {% else %}
-                    <td></td>
-                  {% endif %}
-                {% endfor %}
-                </tr>
-                {% if count.append(count.pop() + 1) %}{% endif %}
-            {% endfor %}
-          </tbody>
-        </table>
-    <hr>
-    It is {{ turn }}'s turn.
+      <p class="right turn-heading">
+        It is {{ turn }}'s turn.
+      </p>
 
+      <table>
+        <thead>
+        <tr>
+          {% for letter in ['', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'] %}
+          <td>{{ letter }}</td>
+          {% endfor %}
+        </tr>
+        </thead>
+        <tbody>
+          {% for i, row in board.rows() %}
+            <tr>
+              <td>{{ i + 1 }}</td>
+              {% for space in row %}
+                {% if space.piece %}
+                  <td>
+                    <a class="{{ space.piece.color }} {{ is_selected(space.piece, request) }}" href="{{ url_for('index', id=space.piece.id) }}"></a>
+                  </td>
+                {% else %}
+                  <td class="{{ is_valid_move(board, space, request) }}">
+                  </td>
+                {% endif %}d
+              {% endfor %}
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
     </body>
 </html>
