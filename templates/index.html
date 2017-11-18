@@ -43,7 +43,7 @@
       text-align: center;
     }
 
-    table > tbody a {
+    table > tbody a.piece {
       margin: 2px;
       width: 90%;
       height: 90%;
@@ -60,47 +60,53 @@
     table > tbody .black {
       background: black;
     }
-    table > tbody .selected {
+    table > tbody a.selected {
       border-color: yellow;
       border-width: 2px;
     }
-    .highlighted {
+    table > tbody a.highlighted {
+      margin: 0;
+      padding: 0;
       background: blue;
+      width: 100%;
+      height: 100%;
+      display: block;
     }
     </style>
   </head>
   <body>
     <h1>Checkers</h1>
     <hr>
-      <p class="right turn-heading">
-        It is {{ turn }}'s turn.
-      </p>
+    <p class="right turn-heading">
+      It is {{ turn }}'s turn.
+    </p>
 
-      <table>
-        <thead>
+    <table>
+      <thead>
         <tr>
           {% for letter in ['', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'] %}
           <td>{{ letter }}</td>
           {% endfor %}
         </tr>
-        </thead>
-        <tbody>
-          {% for i, row in board.rows() %}
-            <tr>
-              <td>{{ i + 1 }}</td>
-              {% for space in row %}
-                {% if space.piece %}
-                  <td>
-                    <a class="{{ space.piece.color }} {{ is_selected(space.piece, request) }}" href="{{ url_for('index', id=space.piece.id) }}"></a>
-                  </td>
-                {% else %}
-                  <td class="{{ is_valid_move(board, space, request) }}">
-                  </td>
-                {% endif %}d
-              {% endfor %}
-            </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </body>
+      </thead>
+      <tbody>
+        {% for i, row in board.rows() %}
+          <tr>
+            <td>{{ i + 1 }}</td>
+            {% for space in row %}
+              {% if space.piece %}
+                <td>
+                  <a class="piece {{ space.piece.color }} {{ is_selected(space.piece, request) }}" href="{{ url_for('index', id=space.piece.id) }}"></a>
+                </td>
+              {% else %}
+                <td>
+                  <a class="{{ move_piece_class(board, space, request) }}" href="{{ move_piece_url(board, space, request) }}"></a>
+                </td>
+              {% endif %}
+            {% endfor %}
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </body>
 </html>

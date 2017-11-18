@@ -1,10 +1,9 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, url_for, redirect, request
 from peewee import *
 from itertools import product
 
 app = Flask(__name__)
 db = SqliteDatabase('checkers.db')
-
 
 class BaseModel(Model):
     class Meta:
@@ -20,16 +19,21 @@ class Piece(BaseModel):
     position = TextField()
     is_kinged = BooleanField()
 
+
 class Space():
     def __init__(self, coord, piece=None):
         self.coord = coord # (2, 4)
         self.piece = piece
+
+    def position(self):
+        return "{}{}".format('ABCDEFGH'[self.coord[1]], self.coord[0] + 1)
 
     @classmethod
     def position_to_coord(_clazz, position_str):
         row = int(position_str[1:]) - 1
         col = ['ABCDEFGH'[i] for i in range(Board.ROWS)].index(position_str[0])
         return row, col
+
 
 class Board():
     ROWS = 8
@@ -41,6 +45,10 @@ class Board():
             row, col = Space.position_to_coord(piece.position)
             self.pieces[row][col] = piece
 
+    def space_at_position(self, position):
+        row, col = Space.position_to_coord(position)
+        return list(self.rows())[row][1][col]
+
     def rows(self):
         for r, row in enumerate(self.pieces):
             yield r, [Space((r, col), row[col]) for col in range(Board.COLS)]
@@ -50,9 +58,11 @@ class Board():
         return next(filter(lambda p: str(p.id) == id, all_pieces), None)
 
     def can_move(self, from_piece, to_space):
+        if to_space.piece is not None:
+            return False
+
         row, col = Space.position_to_coord(from_piece.position)
         if from_piece.color == 'red':
-            print(row, col, to_space.coord)
             return row + 1 == to_space.coord[0] and \
                    (col + 1 == to_space.coord[1] or \
                     col - 1 == to_space.coord[1])
@@ -97,6 +107,7 @@ def seed_data():
     ]
     if len(Turn.select()) == 0:
         Turn.create(whose='black')
+        Piece.delete().execute()
         for red_pos in red_start:
             Piece.create(color='red', position=red_pos, is_kinged=False)
         for black_pos in black_start:
@@ -114,12 +125,33 @@ def is_valid_move(board, space, request):
     id = request.args.get('id', '')
     if id:
         piece = board.piece_by_id(id)
-        if board.can_move(piece, space):
-            return 'highlighted'
-    return ''
+        return board.can_move(piece, space)
+
+def move_piece_class(board, space, request):
+    if is_valid_move(board, space, request):
+        return 'highlighted'
+    return 'disabled'
+
+def move_piece_url(board, space, request):
+    if is_valid_move(board, space, request):
+        return url_for('move', id=request.args.get('id', ''), pos=space.position())
+    return '#'
 
 @app.route("/")
 def index():
     turn = Turn.select().order_by(Turn.id.desc()).get().whose
     board = Board(Piece.select())
-    return render_template('index.html', board=board, turn=turn, is_selected=is_selected, is_valid_move=is_valid_move)
+    return render_template('index.html', board=board, turn=turn, is_selected=is_selected, move_piece_class=move_piece_class, move_piece_url=move_piece_url)
+
+@app.route("/move")
+def move():
+    board = Board(Piece.select())
+    piece = board.piece_by_id(request.args.get('id', ''))
+    position = request.args.get('pos', '')
+    if board.can_move(piece, board.space_at_position(position)):
+        piece.position = position
+        piece.save()
+    return redirect('/') 
+
+if __name__ == '__main__':
+    app.run()
