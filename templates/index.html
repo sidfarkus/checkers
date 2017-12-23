@@ -43,7 +43,7 @@
       text-align: center;
     }
 
-    table > tbody a.piece {
+    table > tbody .piece {
       margin: 2px;
       width: 90%;
       height: 90%;
@@ -95,12 +95,18 @@
             <td>{{ i + 1 }}</td>
             {% for space in row %}
               {% if space.piece %}
+                {% if turn != space.piece.color %}
                 <td>
-                  <a class="piece {{ space.piece.color }} {{ is_selected(space.piece, request) }}" href="{{ url_for('index', id=space.piece.id) }}"></a>
+                  <span class="piece {{ space.piece.color }}"></span>
                 </td>
+                {% else %}
+                <td>
+                  <a class="piece {{ space.piece.color }} {{ selected_class(turn, space.piece, request) }}" href="{{ url_for('index', id=space.piece.id) }}"></a>
+                </td>
+                {% endif %}
               {% else %}
                 <td>
-                  <a class="{{ move_piece_class(board, space, request) }}" href="{{ move_piece_url(board, space, request) }}"></a>
+                  <a class="{{ move_piece_class(turn, board, space, request) }}" href="{{ move_piece_url(board, space, request) }}"></a>
                 </td>
               {% endif %}
             {% endfor %}

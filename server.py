@@ -103,7 +103,7 @@ def seed_data():
         'B8',
         'D8',
         'F8',
-        'H8'
+        'H8',
     ]
     if len(Turn.select()) == 0:
         Turn.create(whose='black')
@@ -116,8 +116,11 @@ def seed_data():
 setup_db()
 seed_data()
 
-def is_selected(piece, request):
-    if str(piece.id) == request.args.get('id', ''):
+def is_selected(whose_turn, piece, request):
+    return whose_turn == piece.color and str(piece.id) == request.args.get('id', '')
+
+def selected_class(whose_turn, piece, request):
+    if is_selected(whose_turn, piece, request):
         return 'selected' 
     return ''
 
@@ -127,8 +130,9 @@ def is_valid_move(board, space, request):
         piece = board.piece_by_id(id)
         return board.can_move(piece, space)
 
-def move_piece_class(board, space, request):
-    if is_valid_move(board, space, request):
+def move_piece_class(turn, board, space, request):
+    piece = board.piece_by_id(request.args.get('id', ''))
+    if piece and turn == piece.color and is_valid_move(board, space, request):
         return 'highlighted'
     return 'disabled'
 
@@ -141,17 +145,23 @@ def move_piece_url(board, space, request):
 def index():
     turn = Turn.select().order_by(Turn.id.desc()).get().whose
     board = Board(Piece.select())
-    return render_template('index.html', board=board, turn=turn, is_selected=is_selected, move_piece_class=move_piece_class, move_piece_url=move_piece_url)
+    return render_template('index.html', board=board, turn=turn, is_selected=is_selected, selected_class=selected_class, move_piece_class=move_piece_class, move_piece_url=move_piece_url)
 
 @app.route("/move")
 def move():
+    turn = Turn.select().order_by(Turn.id.desc()).get()
     board = Board(Piece.select())
     piece = board.piece_by_id(request.args.get('id', ''))
+    if piece.color != turn.whose:
+        return redirect('/')
+
     position = request.args.get('pos', '')
     if board.can_move(piece, board.space_at_position(position)):
         piece.position = position
         piece.save()
+        turn.whose = 'black' if turn.whose == 'red' else 'red'
+        turn.save()
     return redirect('/') 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
